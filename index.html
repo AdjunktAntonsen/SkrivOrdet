@@ -7,44 +7,48 @@
     :root { --primary-color: #2a9d8f; --secondary-color: #264653; --accent-color: #e9c46a; --bg-color: #f9f9f9; --text-color: #333; --card-bg: #fff; --border-radius: 8px; --spacing: 1rem; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Segoe UI', sans-serif; background: var(--bg-color); color: var(--text-color); display: flex; flex-direction: column; min-height: 100vh; padding: var(--spacing); }
-    .container { max-width: 800px; width: 100%; margin: 0 auto; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
-    h1 { text-align: center; font-size: 2rem; color: var(--secondary-color); margin-bottom: var(--spacing); cursor: pointer; }
-    #game { background: var(--card-bg); border-radius: var(--border-radius); box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: var(--spacing); }
-    #controls { display: flex; align-items: center; justify-content: center; gap: var(--spacing); margin-bottom: var(--spacing); }
-    button { background: var(--primary-color); border: none; color: #fff; padding: 0.75rem 1rem; font-size: 1rem; border-radius: var(--border-radius); cursor: pointer; transition: background .2s; }
-    button:hover, button:focus { background: var(--secondary-color); outline: none; }
-    input[type="text"] { flex: 1; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: var(--border-radius); }
-    input:disabled { background: #eee; }
-    #celebration { text-align: center; font-size: 2rem; color: var(--accent-color); margin-bottom: var(--spacing); visibility: hidden; }
-    #score { text-align: center; font-size: 1.1rem; margin-top: var(--spacing); }
-    #bottom { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing); margin-top: var(--spacing); }
-    .column { background: var(--card-bg); border-radius: var(--border-radius); box-shadow: 0 1px 4px rgba(0,0,0,0.1); padding: var(--spacing); display: flex; flex-direction: column; gap: var(--spacing); }
-    .column h2 { font-size: 1.2rem; color: var(--secondary-color); border-bottom: 2px solid var(--primary-color); padding-bottom: 0.5rem; }
-    #timer { font-size: 2rem; font-weight: bold; text-align: center; color: var(--secondary-color); }
-    #highscore-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem; }
-    #highscore-list li { display: flex; justify-content: space-between; font-size: 1rem; }
-    #highscore-list li:first-child { font-weight: bold; color: var(--primary-color); }
+    .container { max-width: 800px; width: 100%; margin: 0 auto; flex: 1; display: flex; flex-direction: column; }
+    h1 { text-align: center; font-size: 2.5rem; color: var(--secondary-color); cursor: pointer; }
+    #controls { display: flex; gap: var(--spacing); justify-content: center; margin: var(--spacing) 0; }
+    button { background: var(--primary-color); border: none; color: #fff; padding: 0.75rem 1rem; border-radius: var(--border-radius); cursor: pointer; transition: background .2s; font-size: 1rem; }
+    button:hover { background: var(--secondary-color); }
+    input[type="text"] { flex: 1; padding: 0.5rem; font-size: 1.1rem; border: 1px solid #ccc; border-radius: var(--border-radius); }
+    #hint-container { text-align: center; margin: var(--spacing) 0; }
+    #hint-label { font-size: 1.2rem; font-weight: bold; color: var(--secondary-color); }
+    #hint { font-size: 1.4rem; font-weight: bold; color: var(--primary-color); }
+    #celebration { text-align: center; font-size: 1.8rem; color: var(--accent-color); min-height: 2.5rem; cursor: pointer; margin: var(--spacing) 0; }
+    #score { text-align: center; font-size: 1.6rem; font-weight: bold; background: var(--card-bg); padding: 0.5rem; border-radius: var(--border-radius); box-shadow: 0 1px 4px rgba(0,0,0,0.1); margin: var(--spacing) 0; }
+    #score span { display: inline-block; min-width: 3rem; font-size: 1.8rem; color: var(--primary-color); }
+    #bottom { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing); }
+    .column { background: var(--card-bg); border-radius: var(--border-radius); padding: var(--spacing); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+    .column h2 { margin-bottom: var(--spacing); color: var(--secondary-color); font-size: 1.3rem; }
+    #timer { font-size: 2.2rem; font-weight: bold; text-align: center; }
+    #highscore-list { list-style: none; padding: 0; }
+    #highscore-list li { display: flex; justify-content: space-between; padding: 0.25rem 0; font-size: 1rem; }
+    #highscore-list li:first-child { font-weight: bold; }
     footer { text-align: center; margin-top: auto; font-size: 0.85rem; color: #777; }
   </style>
 </head>
 <body>
   <div class="container">
-    <div id="game">
-      <h1 id="title">Skriv ordet!</h1>
-      <div id="controls">
-        <button id="playBtn">🔊</button>
-        <input type="text" id="answer" autocomplete="off" placeholder="Skriv ordet her" />
-        <button id="submitBtn">Sjekk</button>
-      </div>
-      <div id="celebration">🎉 Bra!</div>
-      <div id="score">Elev: <span id="studentScore">0</span> — Digitalette: <span id="botScore">0</span></div>
+    <h1 id="title">Skriv ordet!</h1>
+    <div id="controls">
+      <button id="playBtn">🔊</button>
+      <input type="text" id="answer" placeholder="Skriv ordet her" autocomplete="off" />
+      <button id="submitBtn">Sjekk</button>
     </div>
+    <div id="hint-container">
+      <div id="hint-label">Hint</div>
+      <div id="hint">--</div>
+    </div>
+    <div id="celebration"></div>
+    <div id="score">Elev: <span id="studentScore">0</span> — Digitalette: <span id="botScore">0</span></div>
     <div id="bottom">
-      <div class="column" id="highscore-col">
+      <div class="column">
         <h2>HighScore!</h2>
         <ul id="highscore-list"></ul>
       </div>
-      <div class="column" id="timer-col">
+      <div class="column">
         <h2>Timer</h2>
         <div id="timer">05:00</div>
       </div>
@@ -52,119 +56,163 @@
   </div>
   <footer>© 2025 Digitalette. Alle rettigheter reservert.</footer>
   <script>
-    const words = [ /* … alle 300 ord … */ ];
-    let currentWord = null;
-    let studentScore = 0, botScore = 0;
-    let timeRemaining = 300, wordCount = 0, timerInterval;
-    let highscores;
+    document.addEventListener('DOMContentLoaded', () => {
+      // Set your word list here
+      const words = [
+        "og","i","det","på","som","er","en","til","å","han",
+        "av","for","med","at","var","de","ikke","den","har","jeg",
+        "om","et","men","så","seg","hun","hadde","fra","vi","du",
+        "kan","da","ble","ut","skal","vil","ham","etter","over","ved",
+        "også","bare","eller","sa","nå","dette","noe","være","meg","mot",
+        "opp","der","når","inn","dem","kunne","andre","blir","alle","noen",
+        "sin","ha","år","henne","må","selv","sier","få","kom","denne",
+        "enn","to","hans","bli","ville","før","vært","skulle","går","her",
+        "slik","gikk","mer","hva","igjen","fikk","man","alt","mange","ingen",
+        "får","oss","hvor","under","siden","hele","dag","gang","sammen","ned",
+        "kommer","sine","deg","se","første","godt","mellom","måtte","gå","helt",
+        "litt","nok","store","aldri","ta","sig","uten","kanskje","blitt","ser",
+        "hvis","bergen","sitt","jo","vel","si","vet","hennes","min","tre",
+        "ja","samme","mye","nye","tok","gjøre","disse","siste","tid","rundt",
+        "tilbake","mens","satt","flere","folk","fordi","både","la","gjennom","fått",
+        "like","nei","annet","komme","kroner","gjorde","hvordan","norge","norske","gjør",
+        "oslo","står","stor","gamle","langt","annen","sett","først","mener","hver",
+        "barn","rett","ny","tatt","derfor","fram","hos","heller","lenge","alltid",
+        "tror","nesten","mann","gi","god","lå","blant","norsk","visste","bak",
+        "tar","liv","mennesker","frem","bort","verden","deres","tiden","del","vår",
+        "mest","eneste","likevel","hatt","dei","tidligere","fire","liten","tenkte","hverandre",
+        "holdt","bedre","meget","ting","lite","stod","ei","hvert","begynte","gir",
+        "ligger","grunn","dere","livet","sagt","land","kommet","neste","far","egen",
+        "side","gått","mor","ute","videre","millioner","prosent","svarte","sto","begge",
+        "allerede","inne","finne","enda","hjem","foran","måte","mannen","dagen","hodet",
+        "saken","ganger","kjente","stort","blev","mindre","landet","byen","plass","kveld",
+        "ord","øynene","fem","større","gode","nu","synes","beste","kvinner","ett",
+        "satte","hvem","all","klart","holde","ofte","stille","spurte","lenger","sted","dager"
+      ];
 
-    const titleEl = document.getElementById('title');
-    const playBtn = document.getElementById('playBtn');
-    const submitBtn = document.getElementById('submitBtn');
-    const answerInput = document.getElementById('answer');
-    const celebration = document.getElementById('celebration');
-    const studentScoreEl = document.getElementById('studentScore');
-    const botScoreEl = document.getElementById('botScore');
-    const timerEl = document.getElementById('timer');
-    const highscoreListEl = document.getElementById('highscore-list');
+      let currentWord = '';
+      let studentScore = 0, botScore = 0;
+      let timeRemaining = 300, wordCount = 0;
+      let answered = false;
+      let timerInterval;
+      let highscores = [];
 
-    function renderHighscores() {
-      highscores = Array.from({length:5},() => ({
-        name: ['Ola','Kari','Espen','Lise','Per','Nora'][Math.floor(Math.random()*6)],
-        score: Math.floor(Math.random()*181)+20
-      })).sort((a,b)=>b.score-a.score);
-      highscoreListEl.innerHTML = '';
-      highscores.forEach(e => {
-        const li = document.createElement('li'); li.textContent = e.name;
-        const span = document.createElement('span'); span.textContent = e.score;
-        li.appendChild(span); highscoreListEl.appendChild(li);
+      const playBtn = document.getElementById('playBtn');
+      const submitBtn = document.getElementById('submitBtn');
+      const answerInput = document.getElementById('answer');
+      const hintEl = document.getElementById('hint');
+      const celebrationEl = document.getElementById('celebration');
+      const studentScoreEl = document.getElementById('studentScore');
+      const botScoreEl = document.getElementById('botScore');
+      const timerEl = document.getElementById('timer');
+      const highscoreListEl = document.getElementById('highscore-list');
+      const titleEl = document.getElementById('title');
+
+      function loadVoice() {
+        const vs = speechSynthesis.getVoices().filter(v => v.lang === 'nb-NO');
+        return vs.find(v => /female/i.test(v.name)) || vs[0] || null;
+      }
+      let selectedVoice = loadVoice();
+      speechSynthesis.onvoiceschanged = () => { selectedVoice = loadVoice(); };
+
+      function speak(text) {
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'nb-NO'; u.rate = 0.7;
+        if (selectedVoice) u.voice = selectedVoice;
+        speechSynthesis.speak(u);
+      }
+
+      function beep() {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator(); osc.frequency.value = 1000;
+        osc.connect(ctx.destination); osc.start();
+        setTimeout(() => { osc.stop(); ctx.close(); }, 100);
+      }
+
+      function nextWord() {
+        answered = false;
+        celebrationEl.textContent = '';
+        answerInput.value = '';
+        wordCount++;
+        const pool = (wordCount % 3 === 0) ?
+          words.filter(w => w.length >= 4) : words;
+        currentWord = pool[Math.floor(Math.random() * pool.length)];
+        hintEl.textContent = `${currentWord.length} bokstaver`;
+      }
+
+      function renderHighscores() {
+        highscores = Array.from({ length: 5 }, () => ({
+          name: ['Ola','Kari','Espen','Lise','Per','Nora'][Math.floor(Math.random()*6)],
+          score: Math.floor(Math.random()*181)+20
+        })).sort((a,b) => b.score - a.score);
+        highscoreListEl.innerHTML = '';
+        highscores.forEach(e => {
+          const li = document.createElement('li'); li.textContent = e.name;
+          const span = document.createElement('span'); span.textContent = e.score;
+          li.appendChild(span); highscoreListEl.appendChild(li);
+        });
+      }
+
+      function updateTimer() {
+        const m = String(Math.floor(timeRemaining/60)).padStart(2,'0');
+        const s = String(timeRemaining%60).padStart(2,'0');
+        timerEl.textContent = `${m}:${s}`;
+      }
+
+      function checkAnswer() {
+        if (timeRemaining <= 0 || answered) return;
+        answered = true;
+        const guess = answerInput.value.trim().toLowerCase();
+        if (guess === currentWord) {
+          studentScoreEl.textContent = ++studentScore;
+          celebrationEl.textContent = '🎉 Riktig!';
+          timeRemaining += 2; updateTimer();
+          const cheer = new SpeechSynthesisUtterance('Riktig!'); cheer.lang='nb-NO'; cheer.rate=0.7; cheer.voice=selectedVoice;
+          const lowest = highscores[4].score;
+          if (studentScore > lowest) {
+            const name = prompt('Gratulerer! Du kom på HighScore. Skriv navnet ditt:') || 'Spiller';
+            highscores.push({name,score:studentScore}); highscores.sort((a,b)=>b.score-a.score); highscores.splice(5);
+            renderHighscores();
+          }
+          cheer.onend = () => { nextWord(); speak(currentWord); };
+          speechSynthesis.speak(cheer);
+        } else {
+          botScoreEl.textContent = ++botScore;
+          celebrationEl.textContent = 'Feil - et poeng til meg!';
+          speak('Feil, et poeng til meg!');
+          setTimeout(() => { nextWord(); speak(currentWord); },1000);
+        }
+      }
+
+      playBtn.addEventListener('click', () => {
+        if (!currentWord) nextWord();
+        speak(currentWord);
+        answerInput.focus();
       });
-    }
 
-    function updateTimerDisplay() {
-      const m = String(Math.floor(timeRemaining/60)).padStart(2,'0');
-      const s = String(timeRemaining%60).padStart(2,'0');
-      timerEl.textContent = `${m}:${s}`;
-    }
+      submitBtn.addEventListener('click', checkAnswer);
+      answerInput.addEventListener('keydown', e => { if(e.key==='Enter'){e.preventDefault();checkAnswer();}});
+      titleEl.addEventListener('click', () => { studentScore=botScore=0; studentScoreEl.textContent='0'; botScoreEl.textContent='0'; timeRemaining=300; updateTimer(); nextWord(); speak(currentWord); });
 
-    let selectedVoice;
-    function loadVoices() {
-      const vs = speechSynthesis.getVoices().filter(v=>v.lang==='nb-NO');
-      selectedVoice = vs.find(v=>/female/i.test(v.name))||vs[0]||null;
-    }
-    speechSynthesis.onvoiceschanged = loadVoices;
+      function endGame() {
+        clearInterval(timerInterval);
+        celebrationEl.textContent = '🎮 Bra spilt! Trykk her om du vil spille igjen';
+        celebrationEl.onclick = () => { studentScore=botScore=0; studentScoreEl.textContent='0'; botScoreEl.textContent='0'; timeRemaining=300; updateTimer(); nextWord(); speak(currentWord); };
+      }
 
-    function speak(text, rate=0.85) {
-      if(!selectedVoice) loadVoices();
-      const u = new SpeechSynthesisUtterance(text);
-      u.lang='nb-NO'; u.rate=rate;
-      if(selectedVoice) u.voice = selectedVoice;
-      speechSynthesis.speak(u);
-    }
+      timerInterval = setInterval(() => {
+        if (timeRemaining > 0) {
+          timeRemaining--; updateTimer();
+          if (timeRemaining > 0 && (timeRemaining % 60 === 0 || timeRemaining <= 10)) beep();
+          if (timeRemaining === 0) endGame();
+        }
+      }, 1000);
 
-    function beep() {
-      const ctx = new (window.AudioContext||window.webkitAudioContext)();
-      const o = ctx.createOscillator(); o.frequency.value=1000;
-      o.connect(ctx.destination); o.start();
-      setTimeout(()=>{o.stop();ctx.close();},100);
-    }
-
-    function endGame() {
-      clearInterval(timerInterval);
-      celebration.textContent='⏱️ Spillet er over!'; celebration.style.visibility='visible';
-      playBtn.disabled = submitBtn.disabled = true;
-      answerInput.disabled = true;
-    }
-
-    function restartGame() {
-      studentScore = botScore = 0;
-      studentScoreEl.textContent = '0'; botScoreEl.textContent = '0';
-      timeRemaining = 300;
-      updateTimerDisplay();
+      // Init sequence
+      renderHighscores();
+      updateTimer();
       nextWord();
       speak(currentWord);
-    }
-
-    function nextWord() {
-      celebration.style.visibility='hidden'; answerInput.value=''; wordCount++;
-      const pool = (wordCount % 3 === 0) ? words.filter(w => w.length >= 4) : words;
-      currentWord = pool[Math.floor(Math.random() * pool.length)];
-    }
-
-    function checkAnswer() {
-      if(timeRemaining <= 0 || !currentWord) return;
-      const guess = answerInput.value.trim().toLowerCase();
-      if(guess === currentWord) {
-        studentScoreEl.textContent = ++studentScore;
-        celebration.textContent='🎉 Bra!'; celebration.style.visibility='visible';
-        timeRemaining += 2; updateTimerDisplay();
-        const cheer = new SpeechSynthesisUtterance('Bra!'); cheer.lang='nb-NO'; cheer.rate=0.85;
-        if(selectedVoice) cheer.voice = selectedVoice;
-        cheer.onend = () => { nextWord(); speak(currentWord); };
-        speechSynthesis.speak(cheer);
-      } else {
-        botScoreEl.textContent = ++botScore;
-        celebration.textContent='Feil - et poeng til meg!'; celebration.style.visibility='visible';
-        speak('Feil, et poeng til meg!',0.85);
-        setTimeout(() => { celebration.style.visibility='hidden'; nextWord(); }, 1000);
-      }
-    }
-
-    playBtn.addEventListener('click', () => { nextWord(); speak(currentWord); answerInput.focus(); });
-    submitBtn.addEventListener('click', checkAnswer);
-    answerInput.addEventListener('keydown', e => { if(e.key === 'Enter') { e.preventDefault(); checkAnswer(); }});
-    titleEl.addEventListener('click', restartGame);
-
-    timerInterval = setInterval(() => {
-      if(timeRemaining > 0) {
-        timeRemaining--; updateTimerDisplay();
-        if(timeRemaining > 0 && (timeRemaining % 60 === 0 || timeRemaining <= 10)) beep();
-      } else endGame();
-    }, 1000);
-
-    // Init
-    loadVoices(); renderHighscores(); updateTimerDisplay(); nextWord();
-    console.log('Klikk 🔊 for å høre første ord, eller klikk tittelen for å starte på nytt.');
+    });
   </script>
 </body>
 </html>
