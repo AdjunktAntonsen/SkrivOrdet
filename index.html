@@ -57,7 +57,7 @@
   <footer>© 2025 Digitalette. Alle rettigheter reservert.</footer>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Set your word list here
+      // Word list
       const words = [
         "og","i","det","på","som","er","en","til","å","han",
         "av","for","med","at","var","de","ikke","den","har","jeg",
@@ -91,10 +91,12 @@
 
       let currentWord = '';
       let studentScore = 0, botScore = 0;
-      let timeRemaining = 300, wordCount = 0;
+      let timeRemaining = 300;
+      let wordCount = 0;
       let answered = false;
-      let timerInterval;
       let highscores = [];
+      let gameStarted = false;
+      let timerInterval;
 
       const playBtn = document.getElementById('playBtn');
       const submitBtn = document.getElementById('submitBtn');
@@ -111,10 +113,11 @@
         const vs = speechSynthesis.getVoices().filter(v => v.lang === 'nb-NO');
         return vs.find(v => /female/i.test(v.name)) || vs[0] || null;
       }
-      let selectedVoice = loadVoice();
+      let selectedVoice = null;
       speechSynthesis.onvoiceschanged = () => { selectedVoice = loadVoice(); };
 
       function speak(text) {
+        if (!selectedVoice) selectedVoice = loadVoice();
         const u = new SpeechSynthesisUtterance(text);
         u.lang = 'nb-NO'; u.rate = 0.7;
         if (selectedVoice) u.voice = selectedVoice;
@@ -133,8 +136,9 @@
         celebrationEl.textContent = '';
         answerInput.value = '';
         wordCount++;
-        const pool = (wordCount % 3 === 0) ?
-          words.filter(w => w.length >= 4) : words;
+        const pool = (wordCount % 3 === 0)
+          ? words.filter(w => w && w.length >= 4)
+          : words;
         currentWord = pool[Math.floor(Math.random() * pool.length)];
         hintEl.textContent = `${currentWord.length} bokstaver`;
       }
@@ -158,60 +162,66 @@
         timerEl.textContent = `${m}:${s}`;
       }
 
+      function startGame() {
+        if (gameStarted) return;
+        gameStarted = true;
+        nextWord();
+        timerInterval = setInterval(() => {
+          if (timeRemaining > 0) {
+            timeRemaining--; updateTimer();
+            if (timeRemaining > 0 && (timeRemaining % 60 === 0 || timeRemaining <= 10)) beep();
+            if (timeRemaining === 0) endGame();
+          }
+        }, 1000);
+      }
+
       function checkAnswer() {
-        if (timeRemaining <= 0 || answered) return;
+        if (!gameStarted || timeRemaining <= 0 || answered) return;
         answered = true;
         const guess = answerInput.value.trim().toLowerCase();
         if (guess === currentWord) {
-          studentScoreEl.textContent = ++studentScore;
+          studentScore = studentScore + 1;
+          studentScoreEl.textContent = studentScore;
           celebrationEl.textContent = '🎉 Riktig!';
           timeRemaining += 2; updateTimer();
           const cheer = new SpeechSynthesisUtterance('Riktig!'); cheer.lang='nb-NO'; cheer.rate=0.7; cheer.voice=selectedVoice;
-          const lowest = highscores[4].score;
-          if (studentScore > lowest) {
+          if (studentScore > highscores[4].score) {
             const name = prompt('Gratulerer! Du kom på HighScore. Skriv navnet ditt:') || 'Spiller';
-            highscores.push({name,score:studentScore}); highscores.sort((a,b)=>b.score-a.score); highscores.splice(5);
-            renderHighscores();
+            highscores.push({name,score:studentScore}); highscores.sort((a,b)=>b.score-a.score); highscores.splice(5); renderHighscores();
           }
           cheer.onend = () => { nextWord(); speak(currentWord); };
           speechSynthesis.speak(cheer);
         } else {
-          botScoreEl.textContent = ++botScore;
+          botScore = botScore + 1;
+          botScoreEl.textContent = botScore;
           celebrationEl.textContent = 'Feil - et poeng til meg!';
           speak('Feil, et poeng til meg!');
-          setTimeout(() => { nextWord(); speak(currentWord); },1000);
+          setTimeout(() => { nextWord(); speak(currentWord); }, 1000);
         }
       }
-
-      playBtn.addEventListener('click', () => {
-        if (!currentWord) nextWord();
-        speak(currentWord);
-        answerInput.focus();
-      });
-
-      submitBtn.addEventListener('click', checkAnswer);
-      answerInput.addEventListener('keydown', e => { if(e.key==='Enter'){e.preventDefault();checkAnswer();}});
-      titleEl.addEventListener('click', () => { studentScore=botScore=0; studentScoreEl.textContent='0'; botScoreEl.textContent='0'; timeRemaining=300; updateTimer(); nextWord(); speak(currentWord); });
 
       function endGame() {
         clearInterval(timerInterval);
         celebrationEl.textContent = '🎮 Bra spilt! Trykk her om du vil spille igjen';
-        celebrationEl.onclick = () => { studentScore=botScore=0; studentScoreEl.textContent='0'; botScoreEl.textContent='0'; timeRemaining=300; updateTimer(); nextWord(); speak(currentWord); };
+        celebrationEl.onclick = () => {
+          studentScore = 0; botScore = 0; studentScoreEl.textContent='0'; botScoreEl.textContent='0';
+          timeRemaining = 300; updateTimer(); gameStarted = false; startGame(); speak(currentWord);
+        };
       }
 
-      timerInterval = setInterval(() => {
-        if (timeRemaining > 0) {
-          timeRemaining--; updateTimer();
-          if (timeRemaining > 0 && (timeRemaining % 60 === 0 || timeRemaining <= 10)) beep();
-          if (timeRemaining === 0) endGame();
-        }
-      }, 1000);
+      playBtn.addEventListener('click', () => {
+        startGame();
+        speak(currentWord);
+        answerInput.focus();
+      });
+      submitBtn.addEventListener('click', checkAnswer);
+      answerInput.addEventListener('keydown', e => { if(e.key==='Enter'){ e.preventDefault(); checkAnswer(); }});
+      titleEl.addEventListener('click', () => { studentScore=0; botScore=0; studentScoreEl.textContent='0'; botScoreEl.textContent='0'; timeRemaining=300; updateTimer(); gameStarted=false; startGame(); speak(currentWord); });
 
-      // Init sequence
+      // Init state
       renderHighscores();
       updateTimer();
-      nextWord();
-      speak(currentWord);
+      hintEl.textContent = '--';
     });
   </script>
 </body>
